@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"react-redux-todo/backend/app"
+)
 
 func main() {
-	fmt.Printf("test")
+	app.Run(":8080")
 }
