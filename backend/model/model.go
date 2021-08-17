@@ -16,7 +16,7 @@ type TodoData struct {
 var TodoList map[int]TodoData
 
 func logSize() {
-	log.Println(len(TodoList))
+	log.Println("TodoList Size :", len(TodoList))
 }
 
 //CRUD

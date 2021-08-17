@@ -1,47 +1,102 @@
 import { createAction, handleActions } from "redux-actions";
 import { Map, List } from "immutable";
+import * as postApi from "../api/posts";
+import { call, put, all, takeEvery } from "redux-saga/effects";
 
 const ADD = "todo/ADD";
 const DEL = "todo/DEL";
 const GET = "todo/GET";
 const DONE = "todo/DONE";
 
+const GET_POSTS_SUCCESS = "todo/GET_POSTS_SUCCESS";
+const GET_POSTS_ERROR = "todo/GET_POSTS_ERROR";
+
+const ADD_POST_SUCCESS = "todo/ADD_POSTS_SUCCESS";
+const ADD_POST_ERROR = "todo/ADD_POST_ERROR";
+
 export const add = createAction(ADD);
 export const del = createAction(DEL);
 export const get = createAction(GET);
 export const done = createAction(DONE);
 
-const initialState = List([
-  Map({
-    text: "",
-    date: "",
-    id: null,
-    isdone: false,
-  }),
-]);
+const initialState = Map({
+  isLoading: false,
+  error: null,
+  data: List([
+    Map({
+      id: 0,
+      text: "",
+      isdone: false,
+      date: null,
+    }),
+  ]),
+});
+function* getPostsSaga() {
+  try {
+    const posts = yield call(postApi.getPosts);
+    yield put({
+      type: GET_POSTS_SUCCESS,
+      payload: posts,
+    });
+  } catch (e) {
+    yield put({
+      type: GET_POSTS_ERROR,
+      error: true,
+      payload: e,
+    });
+  }
+}
+
+function* addPostSaga(action) {
+  try {
+    const result = yield call(postApi.createPost, action.payload);
+    yield put({
+      type: ADD_POST_SUCCESS,
+      payload: result,
+    });
+  } catch (e) {
+    yield put({
+      type: ADD_POST_ERROR,
+      error: true,
+      payload: e,
+    });
+  }
+}
+export function* postsSaga() {
+  yield takeEvery(GET, getPostsSaga);
+  yield takeEvery(ADD, addPostSaga);
+}
+
+export function* rootSaga() {
+  yield all([postsSaga()]);
+}
 
 export default handleActions(
   {
     [ADD]: (state, action) => {
-      return state.push(Map(action.payload));
+      return state.set("isLoading", true);
+    },
+    //TODO Input data payload
+    [ADD_POST_SUCCESS]: (state, action) => {
+      return state.set("isLoading", false);
+    },
+    [ADD_POST_ERROR]: (state, action) => {
+      return state.merge({ isLoading: false, error: action.payload });
     },
     [DEL]: (state, action) => {
-      const index = state.findIndex(
-        (todo) => todo.get("id") === action.payload.id
-      );
-      return state.delete(index);
+      return;
     },
     [GET]: (state, action) => {
-      const index = state.findIndex((todo) => todo.get("text") === "");
-
-      console.log(index);
-      return state.delete(index);
+      return;
+    },
+    [GET_POSTS_SUCCESS]: (state, action) => {
+      return;
+    },
+    [GET_POSTS_ERROR]: (state, action) => {
+      return;
     },
     [DONE]: (state, action) => {
-      const index = state.findIndex(
-        (todo) => todo.get("id") === action.payload.id
-      );
-      return state.setIn([index, "isdone"], !state.getIn([index, "isdone"]));
+      return;
     },
   },
   initialState

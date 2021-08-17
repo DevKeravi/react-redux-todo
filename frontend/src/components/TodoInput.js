@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Map } from "immutable";
 import useAddTodo from "../hooks/useAddTodo";
+import useGetTodo from "../hooks/useGetTodo";
 
 const TodoInput = () => {
   const [value, setValue] = useState("");
   const onAdd = useAddTodo();
+  const data = useGetTodo();
+  const { isLoading, error } = data;
 
   const onChange = (event) => {
     setValue(event.target.value);
@@ -12,15 +14,8 @@ const TodoInput = () => {
 
   const onClickSubmit = (event) => {
     event.preventDefault();
-    const text = value;
-    const todo = Map({
-      text: text,
-      date: Date.now(),
-      id: Date.now(), // todo
-      isdone: false,
-    });
-    onAdd(todo);
-
+    const payload = value;
+    onAdd(payload);
     setValue("");
   };
 
@@ -33,6 +28,7 @@ const TodoInput = () => {
         value={value}
       />
       <button onClick={onClickSubmit}>Submit</button>
+      {isLoading && !error ? <h1>Fetching...</h1> : <h1>Status OK!</h1>}
     </div>
   );
 };

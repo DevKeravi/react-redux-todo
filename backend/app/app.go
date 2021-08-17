@@ -14,7 +14,13 @@ func getTodosHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, list)
 }
 func createTodoHandler(c *gin.Context) {
-	text := c.PostForm("todo")
+	err := c.Request.ParseForm()
+	if err != nil {
+		log.Println("error : createTodoHandler : ParseForm()", err)
+	}
+	text := c.PostForm("payload")
+	log.Println("createTodoHandler: FormData : ", text)
+
 	if model.Create(text) {
 		c.JSON(http.StatusCreated, gin.H{"success": true})
 	} else {
@@ -51,12 +57,12 @@ func Run(addr string) {
 	router := gin.Default()
 	model.New()
 
-	router.Group("/api")
+	todo := router.Group("/api")
 	{
-		router.GET("/todos", getTodosHandler)
-		router.POST("/todos", createTodoHandler)
-		router.POST("todos/:id", doneTodoHandler)
-		router.DELETE("/todos/:id", delTodoHandler)
+		todo.GET("/todos", getTodosHandler)
+		todo.POST("/todos", createTodoHandler)
+		todo.POST("todos/:id", doneTodoHandler)
+		todo.DELETE("/todos/:id", delTodoHandler)
 	}
 	router.Run(addr)
 }
