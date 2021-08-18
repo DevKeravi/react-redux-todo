@@ -1,8 +1,8 @@
 import { useDispatch } from "react-redux";
-import { add } from "../modules/todo";
+import { ADD } from "../modules/todo";
 
 export default function useAddTodo() {
   const dispatch = useDispatch();
-  const onAdd = (payload) => dispatch(add(payload));
+  const onAdd = (payload) => dispatch(ADD(payload));
   return onAdd;
 }

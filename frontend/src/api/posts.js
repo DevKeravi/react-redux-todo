@@ -1,12 +1,10 @@
 import axios from "axios";
-import { respToTodos } from "../lib/model";
 
 const todoApiUrl = "/api/todos";
 
-//TODO
 export const getPosts = async () => {
   const resp = await axios.get(todoApiUrl);
-  const todos = respToTodos(resp);
+  const todos = resp.data;
   return todos;
 };
 

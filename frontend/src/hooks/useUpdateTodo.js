@@ -1,10 +1,10 @@
 import { useDispatch } from "react-redux";
-import { get } from "../modules/todo";
+import { GET } from "../modules/todo";
 
 export default function useUpdateTodo() {
   const dispatch = useDispatch();
   const onUpdate = () => {
-    dispatch(get());
+    dispatch(GET());
   };
   return onUpdate;
 }
