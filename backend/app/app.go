@@ -11,6 +11,7 @@ import (
 
 func getTodosHandler(c *gin.Context) {
 	list := model.Read()
+	log.Println("getTodosHandler: list :", list)
 	c.JSON(http.StatusOK, list)
 }
 func createTodoHandler(c *gin.Context) {

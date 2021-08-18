@@ -87,10 +87,10 @@ export default handleActions(
       return;
     },
     [GET]: (state, action) => {
-      return;
+      return state.set("isLoading", true);
     },
     [GET_POSTS_SUCCESS]: (state, action) => {
-      return;
+      return state.merge({ isLoading: false, data: action.payload });
     },
     [GET_POSTS_ERROR]: (state, action) => {
       return;

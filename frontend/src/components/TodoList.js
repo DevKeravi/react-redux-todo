@@ -3,18 +3,17 @@ import useGetTodo from "../hooks/useGetTodo";
 import useDoneTodo from "../hooks/useDoneTodo";
 import useDeleteTodo from "../hooks/useDeleteTodo";
 import Todo from "./Todo";
-import { useDispatch } from "react-redux";
-import { get } from "../modules/todo";
+import useUpdateTodo from "../hooks/useUpdateTodo";
 
 const TodoList = () => {
   const todos = useGetTodo();
   const onDone = useDoneTodo();
   const onDel = useDeleteTodo();
-  const dispatch = useDispatch();
-
+  const onUpdate = useUpdateTodo();
   useEffect(() => {
-    dispatch(get());
+    onUpdate();
   }, []);
+
   const handleDone = (payload) => {
     onDone(payload);
   };
@@ -24,11 +23,7 @@ const TodoList = () => {
   return (
     <div>
       <ul>
-        {/*}
         {todos.map((todo, i) => {
-          if (todo.text === "") {
-            onDel(i);
-          }
           return (
             <Todo
               key={todo.id}
@@ -36,9 +31,8 @@ const TodoList = () => {
               handleDone={handleDone}
               handleDelete={handleDelete}
             />
-			);
-		})}
-			{*/}
+          );
+        })}
       </ul>
     </div>
   );

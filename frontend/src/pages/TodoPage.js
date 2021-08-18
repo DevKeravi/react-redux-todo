@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import TodoList from "../components/TodoList";
 import TodoInput from "../components/TodoInput";
 function TodoPage() {

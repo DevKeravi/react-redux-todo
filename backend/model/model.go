@@ -7,9 +7,9 @@ import (
 
 type TodoData struct {
 	Id        int       `json:"id"`
-	Msg       string    `json:"message"`
+	Msg       string    `json:"text"`
 	IsDone    bool      `json:"isdone"`
-	CreatedAt time.Time `json:"createdat"`
+	CreatedAt time.Time `json:"date"`
 }
 
 // key : id
@@ -36,7 +36,8 @@ func Read() []TodoData {
 	if len(TodoList) == 0 {
 		return []TodoData{}
 	} else {
-		list := []TodoData{}
+		list := make([]TodoData, len(TodoList))
+
 		for i, v := range TodoList {
 			list[i] = v
 		}
