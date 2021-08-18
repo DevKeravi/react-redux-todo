@@ -17,6 +17,7 @@ const todoSlice = createSlice({
   initialState,
   reducers: {
     ADD(state, action) {
+      state.error = null;
       state.isLoading = true;
     },
     ADD_POST_SUCCESS(state, action) {

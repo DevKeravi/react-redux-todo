@@ -12,32 +12,18 @@ import {
 function* getPosts() {
   try {
     const posts = yield call(postApi.getPosts);
-    yield put({
-      type: GET_POSTS_SUCCESS,
-      payload: posts,
-    });
+    yield put(GET_POSTS_SUCCESS(posts));
   } catch (e) {
-    yield put({
-      type: GET_POSTS_ERROR,
-      error: true,
-      payload: e,
-    });
+    yield put(GET_POSTS_ERROR(e));
   }
 }
 
 function* addPost(action) {
   try {
     const result = yield call(postApi.createPost, action.payload);
-    yield put({
-      type: ADD_POST_SUCCESS,
-      payload: result,
-    });
+    yield put(ADD_POST_SUCCESS());
   } catch (e) {
-    yield put({
-      type: ADD_POST_ERROR,
-      error: true,
-      payload: e,
-    });
+    yield put(ADD_POST_ERROR(e));
   }
 }
 
