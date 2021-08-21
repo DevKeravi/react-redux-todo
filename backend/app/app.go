@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
+	socketio "github.com/googollee/go-socket.io"
 )
 
 func getTodosHandler(c *gin.Context) {
@@ -55,30 +55,28 @@ func delTodoHandler(c *gin.Context) {
 	}
 }
 
-// websocket
-var wsupgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
-
-func wsHandler(w http.ResponseWriter, r *http.Request) {
-	conn, err := wsupgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Printf("Failed to set websocket upgrade: %+v", err)
-		return
-	}
-	for {
-		t, msg, err := conn.ReadMessage()
-		if err != nil {
-			break
+//CORS 처리
+func GinMiddleware(allowOrigin string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", allowOrigin)
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST,OPTIONS,GET,PUT,DELETE")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, Content-Length, X-CSRF-Token, Token, session, Origin, Host, Connection, Accept-Encoding, Accept-Language, X-Requested-With")
+		if c.Request.Method == http.MethodOptions {
+			c.AbortWithStatus(http.StatusNoContent)
+			return
 		}
-		conn.WriteMessage(t, msg)
+		c.Request.Header.Del("Origin")
+		c.Next()
 	}
 }
 
 func Run(addr string) {
 	router := gin.Default()
+	router.Use(GinMiddleware("http://localhost:3000"))
 	model.New()
+
+	socketServer := socketio.NewServer(nil)
 
 	todo := router.Group("/api")
 	{
@@ -88,8 +86,16 @@ func Run(addr string) {
 		todo.DELETE("/todos/:id", delTodoHandler)
 	}
 
-	router.GET("/socket.io/", func(c *gin.Context) {
-		wsHandler(c.Writer, c.Request)
+	//socket.Io
+	socketServer.OnConnect("/", func(s socketio.Conn) error {
+		s.SetContext("")
+		log.Println("Connected:", s.ID())
+		return nil
 	})
+	go socketServer.Serve()
+	defer socketServer.Close()
+
+	router.GET("/socket.io/", gin.WrapH(socketServer))
+
 	router.Run(addr)
 }
