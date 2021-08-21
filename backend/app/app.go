@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 )
 
 func getTodosHandler(c *gin.Context) {
@@ -54,6 +55,27 @@ func delTodoHandler(c *gin.Context) {
 	}
 }
 
+// websocket
+var wsupgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+func wsHandler(w http.ResponseWriter, r *http.Request) {
+	conn, err := wsupgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Printf("Failed to set websocket upgrade: %+v", err)
+		return
+	}
+	for {
+		t, msg, err := conn.ReadMessage()
+		if err != nil {
+			break
+		}
+		conn.WriteMessage(t, msg)
+	}
+}
+
 func Run(addr string) {
 	router := gin.Default()
 	model.New()
@@ -65,5 +87,9 @@ func Run(addr string) {
 		todo.POST("todos/:id", doneTodoHandler)
 		todo.DELETE("/todos/:id", delTodoHandler)
 	}
+
+	router.GET("/socket.io/", func(c *gin.Context) {
+		wsHandler(c.Writer, c.Request)
+	})
 	router.Run(addr)
 }
