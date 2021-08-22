@@ -9,7 +9,6 @@ function App() {
       <Route exact path="/" component={Home} />
       <Route path="/todo" component={TodoPage} />
       <Route path="/profile" component={Profile} />
-      <Route path="/socketTest" component={SocketTest} />
     </div>
   );
 }

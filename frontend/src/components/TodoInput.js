@@ -22,7 +22,7 @@ const TodoInput = () => {
     event.preventDefault();
     const payload = value;
     onAdd(payload);
-    onUpdate();
+    //    onUpdate();
     setValue("");
   };
 

@@ -90,9 +90,8 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			break
 		}
-		log.Println("from client:", msg)
 		data := make(map[string]interface{})
-		data["message"] = msg
+		data["type"] = string(msg)
 		doc, _ := json.Marshal(data)
 		conn.WriteMessage(t, doc)
 	}

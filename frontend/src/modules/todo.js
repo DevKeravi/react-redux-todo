@@ -40,6 +40,7 @@ const todoSlice = createSlice({
       state.error = action.payload;
     },
     DONE(state, action) {},
+    INITALIZE_WS_CHANNEL(state, action) {},
   },
 });
 
@@ -53,6 +54,7 @@ export const {
   GET_POSTS_SUCCESS,
   GET_POSTS_ERROR,
   DONE,
+  INITALIZE_WS_CHANNEL,
 } = actions;
 export default reducer;
 /*

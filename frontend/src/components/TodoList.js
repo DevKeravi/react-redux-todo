@@ -11,7 +11,13 @@ const TodoList = () => {
   const onDel = useDeleteTodo();
   const onUpdate = useUpdateTodo();
   useEffect(() => {
-    onUpdate();
+    setInterval(() => {
+      onUpdate();
+      console.log("updated");
+    }, 3000);
+    return () => {
+      clearInterval(0);
+    };
   }, []);
 
   const handleDone = (payload) => {
@@ -23,7 +29,7 @@ const TodoList = () => {
   return (
     <div>
       <ul>
-        {todos.map((todo, i) => {
+        {todos.map((todo) => {
           return (
             <Todo
               key={todo.id}

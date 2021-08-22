@@ -24,11 +24,6 @@ const Menu = () => {
             Profile
           </NavLink>
         </li>
-        <li>
-          <NavLink activeStyle={activeStyle} exact to="/socketTest">
-            Socket
-          </NavLink>
-        </li>
       </ul>
     </div>
   );
