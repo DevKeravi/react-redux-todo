@@ -1,13 +1,14 @@
 package app
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"react-redux-todo/backend/model"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	socketio "github.com/googollee/go-socket.io"
+	"github.com/gorilla/websocket"
 )
 
 func getTodosHandler(c *gin.Context) {
@@ -71,12 +72,36 @@ func GinMiddleware(allowOrigin string) gin.HandlerFunc {
 	}
 }
 
+// websocket
+var wsupgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+func wsHandler(w http.ResponseWriter, r *http.Request) {
+	conn, err := wsupgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println("Failed to set websocket upgrader:", err)
+		return
+	}
+	log.Println("Connected websocket")
+	for {
+		t, msg, err := conn.ReadMessage()
+		if err != nil {
+			break
+		}
+		log.Println("from client:", msg)
+		data := make(map[string]interface{})
+		data["message"] = msg
+		doc, _ := json.Marshal(data)
+		conn.WriteMessage(t, doc)
+	}
+}
+
 func Run(addr string) {
 	router := gin.Default()
 	router.Use(GinMiddleware("http://localhost:3000"))
 	model.New()
-
-	socketServer := socketio.NewServer(nil)
 
 	todo := router.Group("/api")
 	{
@@ -86,16 +111,9 @@ func Run(addr string) {
 		todo.DELETE("/todos/:id", delTodoHandler)
 	}
 
-	//socket.Io
-	socketServer.OnConnect("/", func(s socketio.Conn) error {
-		s.SetContext("")
-		log.Println("Connected:", s.ID())
-		return nil
+	router.GET("/ws", func(c *gin.Context) {
+		wsHandler(c.Writer, c.Request)
 	})
-	go socketServer.Serve()
-	defer socketServer.Close()
-
-	router.GET("/socket.io/", gin.WrapH(socketServer))
 
 	router.Run(addr)
 }
