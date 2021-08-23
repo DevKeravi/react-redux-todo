@@ -5,6 +5,7 @@ import useUpdateTodo from "../hooks/useUpdateTodo";
 
 const TodoInput = () => {
   const [value, setValue] = useState("");
+
   const onAdd = useAddTodo();
   const data = useGetTodo();
   const onUpdate = useUpdateTodo();
@@ -22,7 +23,7 @@ const TodoInput = () => {
     event.preventDefault();
     const payload = value;
     onAdd(payload);
-    //    onUpdate();
+    onUpdate();
     setValue("");
   };
 

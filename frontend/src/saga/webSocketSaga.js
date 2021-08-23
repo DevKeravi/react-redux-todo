@@ -5,6 +5,7 @@ import { eventChannel } from "redux-saga";
 function createEventChannel() {
   return eventChannel((emit) => {
     const ws = new WebSocket("ws://localhost:5000/ws");
+
     ws.onopen = () => {
       console.log("Opening Websocket");
       ws.send("hello server");
@@ -12,9 +13,11 @@ function createEventChannel() {
     ws.onerror = (error) => {
       console.log("webSocket Error:", error);
     };
+
     ws.onmessage = (e) => {
       return emit({ data: JSON.parse(e.data) });
     };
+
     ws.onclose = (e) => {
       if (e.code === 1005) {
         console.log("WebSocket closed");
@@ -39,8 +42,12 @@ function* initializeWebScoketsChannel() {
   const channel = yield call(createEventChannel);
   while (true) {
     const { data } = yield take(channel);
-    //yield put(updateM)
+    yield socketListener(data);
   }
+}
+
+function socketListener({ data }) {
+  console.log(data);
 }
 
 export function* initWebSocket() {

@@ -30,6 +30,7 @@ function* addPost(action) {
 export function* getPostsSaga() {
   yield takeEvery(GET, getPosts);
 }
+
 export function* addPostSaga() {
   yield takeEvery(ADD, addPost);
 }

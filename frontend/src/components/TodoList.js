@@ -1,24 +1,22 @@
-import React, { useEffect } from "react";
+import React from "react";
 import useGetTodo from "../hooks/useGetTodo";
 import useDoneTodo from "../hooks/useDoneTodo";
 import useDeleteTodo from "../hooks/useDeleteTodo";
 import Todo from "./Todo";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import useUpdateTodo from "../hooks/useUpdateTodo";
 
 const TodoList = () => {
-  const todos = useGetTodo();
+  const todos = useSelector((state) => state.todo.data);
   const onDone = useDoneTodo();
   const onDel = useDeleteTodo();
   const onUpdate = useUpdateTodo();
+
   useEffect(() => {
-    setInterval(() => {
-      onUpdate();
-      console.log("updated");
-    }, 3000);
-    return () => {
-      clearInterval(0);
-    };
-  }, []);
+    console.log("changed");
+  }, [todos]);
 
   const handleDone = (payload) => {
     onDone(payload);

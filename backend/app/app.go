@@ -13,14 +13,15 @@ import (
 
 func getTodosHandler(c *gin.Context) {
 	list := model.Read()
-	log.Println("getTodosHandler: list :", list)
 	c.JSON(http.StatusOK, list)
 }
+
 func createTodoHandler(c *gin.Context) {
 	err := c.Request.ParseForm()
 	if err != nil {
 		log.Println("error : createTodoHandler : ParseForm()", err)
 	}
+
 	text := c.PostForm("payload")
 	log.Println("createTodoHandler: FormData : ", text)
 
@@ -30,6 +31,7 @@ func createTodoHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false})
 	}
 }
+
 func doneTodoHandler(c *gin.Context) {
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {

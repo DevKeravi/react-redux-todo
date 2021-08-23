@@ -11,6 +11,7 @@ export const getPosts = async () => {
 export const createPost = async (payload) => {
   const form = new FormData();
   form.append("payload", payload);
+
   const resp = await axios.post(todoApiUrl, form);
   return resp;
 };

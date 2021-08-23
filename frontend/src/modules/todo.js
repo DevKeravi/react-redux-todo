@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isLoading: false,
   error: null,
+
   data: [
     {
       id: 0,
@@ -12,9 +13,12 @@ const initialState = {
     },
   ],
 };
+
 const todoSlice = createSlice({
   name: "todo",
+
   initialState,
+
   reducers: {
     ADD(state, action) {
       state.error = null;
@@ -40,7 +44,6 @@ const todoSlice = createSlice({
       state.error = action.payload;
     },
     DONE(state, action) {},
-    INITALIZE_WS_CHANNEL(state, action) {},
   },
 });
 
