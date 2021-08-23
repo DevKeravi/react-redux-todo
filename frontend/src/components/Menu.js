@@ -24,6 +24,11 @@ const Menu = () => {
             Profile
           </NavLink>
         </li>
+        <li>
+          <NavLink activeStyle={activeStyle} exact to="/socket">
+            Chat
+          </NavLink>
+        </li>
       </ul>
     </div>
   );

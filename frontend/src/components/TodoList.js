@@ -1,18 +1,14 @@
 import React from "react";
-import useGetTodo from "../hooks/useGetTodo";
 import useDoneTodo from "../hooks/useDoneTodo";
 import useDeleteTodo from "../hooks/useDeleteTodo";
 import Todo from "./Todo";
-import { useState } from "react";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import useUpdateTodo from "../hooks/useUpdateTodo";
+import { useSelector } from "react-redux";
 
 const TodoList = () => {
   const todos = useSelector((state) => state.todo.data);
   const onDone = useDoneTodo();
   const onDel = useDeleteTodo();
-  const onUpdate = useUpdateTodo();
 
   useEffect(() => {
     console.log("changed");

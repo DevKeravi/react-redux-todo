@@ -20,7 +20,7 @@ function* getPosts() {
 
 function* addPost(action) {
   try {
-    const result = yield call(postApi.createPost, action.payload);
+    yield call(postApi.createPost, action.payload);
     yield put(ADD_POST_SUCCESS());
   } catch (e) {
     yield put(ADD_POST_ERROR(e));

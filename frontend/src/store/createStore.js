@@ -2,10 +2,11 @@ import createSagaMiddleware from "@redux-saga/core";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { rootSaga } from "../saga";
 import todoReducer from "../modules/todo";
-import { composeWithDevTools } from "redux-devtools-extension";
+import chatReducer from "../modules/chat";
 
 const reducers = combineReducers({
   todo: todoReducer,
+  chat: chatReducer,
 });
 
 const sagaMiddleware = createSagaMiddleware();

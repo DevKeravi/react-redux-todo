@@ -23,7 +23,6 @@ func createTodoHandler(c *gin.Context) {
 	}
 
 	text := c.PostForm("payload")
-	log.Println("createTodoHandler: FormData : ", text)
 
 	if model.Create(text) {
 		c.JSON(http.StatusCreated, gin.H{"success": true})
@@ -80,6 +79,14 @@ var wsupgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
+type jsonData struct {
+	Type    string `json:"type"`
+	Payload string `json:"payload"`
+	Id      int    `json:"id"`
+}
+
+var listId int
+
 func wsHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := wsupgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -87,14 +94,25 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Println("Connected websocket")
+
 	for {
 		t, msg, err := conn.ReadMessage()
 		if err != nil {
 			break
 		}
-		data := make(map[string]interface{})
-		data["type"] = string(msg)
-		doc, _ := json.Marshal(data)
+		buf := jsonData{}
+		err = json.Unmarshal(msg, &buf)
+		if err != nil {
+			log.Println(err)
+		}
+
+		buf.Id = listId
+
+		doc, err := json.Marshal(buf)
+		if err != nil {
+			log.Println(err)
+		}
+		listId++
 		conn.WriteMessage(t, doc)
 	}
 }
@@ -103,6 +121,7 @@ func Run(addr string) {
 	router := gin.Default()
 	router.Use(GinMiddleware("http://localhost:3000"))
 	model.New()
+	listId = 1
 
 	todo := router.Group("/api")
 	{
