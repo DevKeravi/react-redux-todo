@@ -1,33 +1,31 @@
 import React from "react";
-import { Nav, Navbar, Container } from "react-bootstrap";
+import { ListGroup, Nav, Navbar, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
 const Menu = () => {
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-      <Container>
+    <Nav className="flex-column p-2 vh-100">
+      <Nav.Item>
         <LinkContainer to="/">
-          <Navbar.Brand>Testing App</Navbar.Brand>
+          <Nav.Link>Home</Nav.Link>
         </LinkContainer>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto">
-            <LinkContainer exact to="/">
-              <Nav.Link>Home</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/todo">
-              <Nav.Link>Todo</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/profile">
-              <Nav.Link>Profile</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/socket">
-              <Nav.Link>Chat</Nav.Link>
-            </LinkContainer>
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+      </Nav.Item>
+      <Nav.Item>
+        <LinkContainer to="/todo">
+          <Nav.Link>Todo</Nav.Link>
+        </LinkContainer>
+      </Nav.Item>
+      <Nav.Item>
+        <LinkContainer to="/profile">
+          <Nav.Link>Profile</Nav.Link>
+        </LinkContainer>
+      </Nav.Item>
+      <Nav.Item>
+        <LinkContainer to="/socket">
+          <Nav.Link>Chat</Nav.Link>
+        </LinkContainer>
+      </Nav.Item>
+    </Nav>
   );
 };
 
